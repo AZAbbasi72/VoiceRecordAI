@@ -1,12 +1,23 @@
 {
-  "background_color": "#ffffff",
-  "dir": "ltr",
+  "name": "VoiceMind AI - Smart Voice Notes",
+  "short_name": "VoiceMind",
+  "start_url": "./index.html",
   "display": "standalone",
-  "name": "voiceRecordAI",
-  "orientation": "any",
-  "scope": "/",
-  "short_name": "voiceRecordAI",
-  "start_url": "/",
-  "theme_color": "#ffffff",
-  "description": "&lt;uses-permission android:name=\"android.permission.RECORD_AUDIO\" /&gt;\n&lt;uses-permission android:name=\"android.permission.INTERNET\" /&gt;"
+  "background_color": "#0f172a",
+  "theme_color": "#4f46e5",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/8644/8644591.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "https://cdn-icons-png.flaticon.com/512/8644/8644591.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
 }
