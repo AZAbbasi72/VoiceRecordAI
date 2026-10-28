@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en" class="dark h-full">
 <head>
-    <link rel="manifest" href="./manifest.json">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="manifest" href="manifest.json">
     <title>VoiceMind AI - Smart Voice Notes</title>
     
     <!-- Google Fonts & Icons -->
@@ -22,83 +22,67 @@
                     fontFamily: {
                         sans: ['Plus Jakarta Sans', 'sans-serif'],
                         urdu: ['Noto Nastaliq Urdu', 'serif']
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f5ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                            accent: '#06b6d4'
+                        }
                     }
                 }
             }
         }
     </script>
     <style>
-        .urdu-text { font-family: 'Noto Nastaliq Urdu', serif; line-height: 2.2; }
-        .glass-card { background: var(--card-bg, rgba(15, 23, 42, 0.75)); backdrop-filter: blur(16px); border: 1px solid var(--card-border, rgba(255, 255, 255, 0.08)); }
-        .glow-effect { box-shadow: 0 0 25px -5px var(--glow-color, rgba(99, 102, 241, 0.4)); }
-        
-        /* 5 Dynamic Dark Themes */
-        body.theme-indigo { --bg-color: #0f172a; --card-bg: rgba(30, 41, 59, 0.75); --card-border: rgba(99, 102, 241, 0.25); --glow-color: rgba(99, 102, 241, 0.4); --accent-color: #6366f1; }
-        body.theme-emerald { --bg-color: #022c22; --card-bg: rgba(6, 78, 59, 0.65); --card-border: rgba(16, 185, 129, 0.3); --glow-color: rgba(16, 185, 129, 0.5); --accent-color: #10b981; }
-        body.theme-sunset { --bg-color: #2e1065; --card-bg: rgba(88, 28, 135, 0.65); --card-border: rgba(244, 63, 94, 0.3); --glow-color: rgba(244, 63, 94, 0.5); --accent-color: #f43f5e; }
-        body.theme-amethyst { --bg-color: #1e1b4b; --card-bg: rgba(49, 46, 129, 0.7); --card-border: rgba(168, 85, 247, 0.3); --glow-color: rgba(168, 85, 247, 0.5); --accent-color: #a855f7; }
-        body.theme-oceanic { --bg-color: #082f49; --card-bg: rgba(12, 74, 110, 0.7); --card-border: rgba(6, 182, 212, 0.3); --glow-color: rgba(6, 182, 212, 0.5); --accent-color: #06b6d4; }
-
-        body { background-color: var(--bg-color, #0f172a); transition: background-color 0.3s ease; }
-
-        /* Custom scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(15, 23, 42, 0.5); }
-        ::-webkit-scrollbar-thumb { background: rgba(99, 102, 241, 0.3); border-radius: 9999px; }
+        .urdu-text { font-family: 'Noto Nastaliq Urdu', serif; line-height: 2.2; direction: rtl; text-align: right; }
+        .glass-card { background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(16px); border: 1px solid rgba(255, 255, 255, 0.08); }
+        .glow-effect { box-shadow: 0 0 25px -5px rgba(99, 102, 241, 0.4); }
     </style>
 </head>
-<body class="theme-indigo text-slate-100 font-sans h-full overflow-hidden flex flex-col">
-
-    <!-- Toast Notification Box -->
-    <div id="toast-container" class="fixed top-4 right-4 z-50 flex flex-col gap-2 pointer-events-none"></div>
+<body id="app-body" class="bg-slate-950 text-slate-100 font-sans h-full overflow-hidden flex flex-col">
 
     <!-- Header -->
-    <header class="px-5 py-4 bg-slate-900/90 border-b border-slate-800/80 flex justify-between items-center z-20 shrink-0">
+    <header class="px-5 py-4 bg-slate-900/90 border-b border-slate-800/80 flex justify-between items-center z-20">
         <div class="flex items-center gap-3">
-            <!-- Settings Dropdown Button (Top Left) -->
+            <!-- Settings Dropdown Menu Button -->
             <div class="relative">
-                <button id="settings-toggle-btn" onclick="toggleSettingsMenu(event)" class="w-10 h-10 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700/80 flex items-center justify-center text-slate-200 transition shadow-md active:scale-95">
-                    <i class="fa-solid fa-gear text-lg text-indigo-400"></i>
+                <button onclick="toggleSettingsMenu()" class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-cyan-500 flex items-center justify-center text-white shadow-lg glow-effect focus:outline-none">
+                    <i class="fa-solid fa-gear text-lg"></i>
                 </button>
-
-                <!-- Settings Dropdown Menu -->
-                <div id="settings-menu" class="hidden absolute left-0 mt-2 w-72 glass-card bg-slate-900/95 border border-slate-700/80 rounded-2xl p-4 shadow-2xl z-50 space-y-4 text-xs">
-                    <div class="flex justify-between items-center border-b border-slate-800 pb-2">
-                        <h3 class="font-bold text-slate-200 flex items-center gap-2 text-sm">
-                            <i class="fa-solid fa-sliders text-indigo-400"></i> App Settings
-                        </h3>
-                        <button onclick="toggleSettingsMenu()" class="text-slate-400 hover:text-slate-200">
-                            <i class="fa-solid fa-xmark"></i>
-                        </button>
-                    </div>
+                <!-- Settings Popover Menu -->
+                <div id="settings-menu" class="hidden absolute left-0 mt-2 w-56 glass-card rounded-2xl p-3 shadow-2xl z-50 space-y-3 border border-slate-700">
+                    <div class="text-xs font-bold text-indigo-400 uppercase tracking-wider px-1">App Settings</div>
                     
                     <!-- Theme Selector -->
                     <div>
-                        <label class="block text-slate-400 font-semibold mb-1.5">Color Theme</label>
-                        <select id="theme-selector" onchange="changeTheme(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
-                            <option value="theme-indigo">🌌 Midnight Cyber (Default)</option>
-                            <option value="theme-emerald">🌲 Emerald Matrix</option>
-                            <option value="theme-sunset">🌅 Sunset Crimson</option>
-                            <option value="theme-amethyst">🔮 Amethyst Violet</option>
-                            <option value="theme-oceanic">🌊 Oceanic Teal</option>
+                        <label class="block text-[11px] text-slate-400 mb-1">Theme Style</label>
+                        <select id="setting-theme" onchange="changeTheme(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                            <option value="slate">🌌 Dark Slate</option>
+                            <option value="midnight">🌙 Midnight Blue</option>
+                            <option value="emerald">🌲 Emerald Forest</option>
+                            <option value="sunset">🌅 Sunset Purple</option>
+                            <option value="cyberpunk">⚡ Cyberpunk Neon</option>
                         </select>
                     </div>
 
-                    <!-- Visualizer Style Toggle -->
+                    <!-- Voice Spectrum Style -->
                     <div>
-                        <label class="block text-slate-400 font-semibold mb-1.5">Voice Spectrum Style</label>
-                        <select id="vis-style-selector" onchange="changeVisualizerStyle(this.value)" class="w-full bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-slate-200 focus:outline-none focus:border-indigo-500">
-                            <option value="bar">📊 Pulsating Bars</option>
-                            <option value="wave">🌊 Sinusoidal Wave</option>
+                        <label class="block text-[11px] text-slate-400 mb-1">Voice Visualizer</label>
+                        <select id="setting-spectrum" onchange="changeSpectrumStyle(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
+                            <option value="bar">Bars Waveform</option>
+                            <option value="wave">Pulse Wave</option>
                         </select>
                     </div>
 
                     <!-- Add Custom Category -->
-                    <div>
-                        <label class="block text-slate-400 font-semibold mb-1.5">Add Custom Category</label>
-                        <div class="flex gap-2">
-                            <input type="text" id="custom-cat-input" placeholder="e.g. Work, Shopping" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-1.5 text-slate-200 focus:outline-none text-xs">
-                            <button onclick="addCustomCategory()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-3 py-1.5 rounded-xl font-semibold transition">Add</button>
+                    <div class="pt-1 border-t border-slate-800">
+                        <label class="block text-[11px] text-slate-400 mb-1">Add Category</label>
+                        <div class="flex gap-1.5">
+                            <input type="text" id="new-category-input" placeholder="New name..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-slate-200 focus:outline-none">
+                            <button onclick="addNewCategory()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded-xl text-xs"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
                 </div>
@@ -106,586 +90,405 @@
 
             <div>
                 <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-indigo-300 via-cyan-300 to-white bg-clip-text text-transparent">VoiceMind AI</h1>
-                <p class="text-[11px] text-slate-400 mt-1">Live Recorder & AI Assistant</p>
+                <p class="text-[11px] text-slate-400 mt-1">Bilingual Voice Vault</p>
             </div>
         </div>
-        <div id="status-badge" class="px-3 py-1 rounded-full bg-slate-800 border border-slate-700 text-xs font-medium text-slate-300 flex items-center gap-2">
-            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-            Ready
+
+        <!-- Language Selector -->
+        <div class="flex items-center bg-slate-900 border border-slate-800 rounded-xl p-1">
+            <button onclick="setLanguage('ur')" id="lang-ur-btn" class="px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all">اردو</button>
+            <button onclick="setLanguage('en')" id="lang-en-btn" class="px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 transition-all">English</button>
         </div>
     </header>
 
-    <!-- Main Dynamic Content Container -->
-    <main class="flex-1 overflow-y-auto p-4 pb-24 max-w-lg mx-auto w-full space-y-4">
-
-        <!-- TAB 1: VOICE RECORDER -->
-        <section id="tab-recorder" class="space-y-4">
-            <!-- Settings Card -->
-            <div class="glass-card rounded-2xl p-4 grid grid-cols-2 gap-3">
-                <div>
-                    <label class="block text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Category</label>
-                    <select id="rec-category" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                        <option value="Auto-Detect" selected>🪄 Auto-Detect</option>
-                        <option value="Idea">💡 Idea</option>
-                        <option value="Memory">🧠 Memory</option>
-                        <option value="Assignment">📋 Assignment</option>
-                        <option value="Reminder">⏰ Reminder</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-[11px] uppercase tracking-wider text-slate-400 font-semibold mb-1">Language</label>
-                    <select id="rec-language" class="w-full bg-slate-900 border border-slate-700/80 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                        <option value="ur-PK" selected>Urdu (اردو)</option>
-                        <option value="en-US">English (US)</option>
-                    </select>
-                </div>
-            </div>
-
-            <!-- Waveform & Timer Visualizer -->
-            <div class="glass-card rounded-2xl p-6 text-center space-y-4 relative overflow-hidden">
-                <div id="recording-timer" class="text-3xl font-mono font-bold text-slate-300">00:00</div>
-                
-                <!-- Audio Wave Visualizer Container -->
-                <div class="flex items-center justify-center gap-1.5 h-16 my-2" id="wave-container">
-                    <div class="wave-bar w-1.5 h-4 bg-slate-700 rounded-full transition-all duration-150"></div>
-                    <div class="wave-bar w-1.5 h-8 bg-slate-700 rounded-full transition-all duration-150"></div>
-                    <div class="wave-bar w-1.5 h-12 bg-slate-700 rounded-full transition-all duration-150"></div>
-                    <div class="wave-bar w-1.5 h-6 bg-slate-700 rounded-full transition-all duration-150"></div>
-                    <div class="wave-bar w-1.5 h-14 bg-slate-700 rounded-full transition-all duration-150"></div>
-                    <div class="wave-bar w-1.5 h-8 bg-slate-700 rounded-full transition-all duration-150"></div>
-                    <div class="wave-bar w-1.5 h-4 bg-slate-700 rounded-full transition-all duration-150"></div>
-                </div>
-
-                <!-- Record Toggle Button -->
-                <button id="mic-btn" onclick="toggleRecording()" class="w-20 h-20 mx-auto rounded-full bg-indigo-600 hover:bg-indigo-500 flex items-center justify-center text-white text-2xl shadow-xl transition-all transform active:scale-95 glow-effect">
-                    <i class="fa-solid fa-microphone" id="mic-icon"></i>
-                </button>
-            </div>
-
-            <!-- Transcripts & Translation Box -->
-            <div class="glass-card rounded-2xl p-4 space-y-3">
-                <div>
-                    <div class="flex justify-between items-center mb-1">
-                        <label class="block text-xs font-semibold text-indigo-400">Real-time Transcript</label>
-                        <button onclick="clearTranscript()" class="text-[10px] text-slate-400 hover:text-slate-200">Clear</button>
-                    </div>
-                    <div id="transcript-box" contenteditable="true" class="min-h-[70px] bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                        Tap microphone button above and start speaking...
-                    </div>
-                </div>
-                <div>
-                    <label class="block text-xs font-semibold text-cyan-400 mb-1">Automated Translation</label>
-                    <div id="translation-box" class="min-h-[70px] bg-slate-950/80 border border-slate-800 rounded-xl p-3 text-sm text-slate-300">
-                        Translation will generate automatically as you speak...
-                    </div>
-                </div>
-                
-                <!-- Action Controls -->
-                <button onclick="saveVoiceNote()" class="w-full py-3 bg-gradient-to-r from-indigo-600 to-cyan-600 hover:from-indigo-500 hover:to-cyan-500 text-white font-semibold rounded-xl transition shadow-lg flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-floppy-disk"></i> Save & Translate Note
-                </button>
-            </div>
-        </section>
-
-        <!-- TAB 2: VOICE VAULT / NOTES FEED -->
-        <section id="tab-notes" class="hidden space-y-3">
-            <div class="flex gap-2">
-                <input type="text" id="search-input" oninput="renderNotes()" placeholder="Search notes..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-2 text-sm text-slate-200 focus:outline-none focus:border-indigo-500">
-                <select id="filter-cat" onchange="renderNotes()" class="bg-slate-900 border border-slate-800 rounded-xl px-3 py-2 text-sm text-slate-200 focus:outline-none">
-                    <option value="All">All Categories</option>
-                    <option value="Idea">Idea</option>
-                    <option value="Memory">Memory</option>
-                    <option value="Assignment">Assignment</option>
-                    <option value="Reminder">Reminder</option>
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto p-4 space-y-4 relative pb-24">
+        
+        <!-- Tab 1: Live Recording View -->
+        <div id="tab-record" class="space-y-4">
+            
+            <!-- Category & Status Bar -->
+            <div class="flex justify-between items-center px-1">
+                <select id="note-category" class="bg-slate-900/90 border border-slate-800 text-slate-300 text-xs rounded-xl px-3 py-1.5 focus:outline-none">
+                    <option value="General">🏷️ General</option>
+                    <option value="Work">💼 Work</option>
+                    <option value="Ideas">💡 Ideas</option>
+                    <option value="Personal">📝 Personal</option>
                 </select>
-            </div>
-            <div id="notes-list" class="space-y-3">
-                <!-- Dynamic Notes Container -->
-            </div>
-        </section>
-
-        <!-- TAB 3: AI ASSISTANT CHAT -->
-        <section id="tab-chat" class="hidden flex flex-col h-[68vh]">
-            <div id="chat-box" class="flex-1 glass-card rounded-2xl p-4 overflow-y-auto space-y-3">
-                <div class="bg-slate-900 border border-slate-800 p-3 rounded-xl max-w-[85%] text-xs leading-relaxed text-slate-200">
-                    <i class="fa-solid fa-robot text-indigo-400 mr-1"></i> Hello! I can search across all your saved voice notes and answer questions about your ideas or reminders.
+                <div id="recording-timer" class="text-xs font-mono text-slate-400 flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-slate-600" id="timer-dot"></span> 00:00
                 </div>
             </div>
-            <div class="mt-3 flex gap-2">
-                <input type="text" id="chat-input" placeholder="Ask about saved notes..." class="flex-1 bg-slate-900 border border-slate-800 rounded-xl px-4 py-3 text-sm text-slate-200 focus:outline-none focus:border-indigo-500" onkeypress="if(event.key === 'Enter') handleChatQuery()">
-                <button onclick="handleChatQuery()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-5 rounded-xl transition flex items-center justify-center">
-                    <i class="fa-solid fa-paper-plane"></i>
+
+            <!-- Voice Visualizer Box -->
+            <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center h-28 relative overflow-hidden">
+                <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-transparent pointer-events-none"></div>
+                <div id="visualizer-container" class="flex items-center gap-1 h-12 w-full justify-center">
+                    <!-- Dynamic bars will render here -->
+                    <div class="w-1 bg-indigo-500/30 h-4 rounded-full animate-pulse"></div>
+                    <div class="w-1 bg-indigo-500/50 h-8 rounded-full animate-pulse"></div>
+                    <div class="w-1 bg-cyan-400 h-12 rounded-full animate-pulse"></div>
+                    <div class="w-1 bg-indigo-500/50 h-8 rounded-full animate-pulse"></div>
+                    <div class="w-1 bg-indigo-500/30 h-4 rounded-full animate-pulse"></div>
+                </div>
+                <p id="visualizer-status" class="text-[11px] text-slate-400 mt-2 font-medium">Tap microphone to begin listening</p>
+            </div>
+
+            <!-- Transcript Cards -->
+            <div class="grid grid-cols-1 gap-3">
+                <!-- Original Spoken Text -->
+                <div class="glass-card rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+                        <span class="font-semibold text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-microphone"></i> Live Transcript</span>
+                        <button onclick="copyText('transcript-box')" class="hover:text-white transition-colors"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div id="transcript-box" class="min-h-[70px] max-h-36 overflow-y-auto text-sm text-slate-200 outline-none whitespace-pre-wrap" contenteditable="true" placeholder="Speech transcript will appear here..."></div>
+                </div>
+
+                <!-- Translated Text -->
+                <div class="glass-card rounded-2xl p-4 space-y-2">
+                    <div class="flex justify-between items-center text-xs text-slate-400 border-b border-slate-800 pb-2">
+                        <span class="font-semibold text-cyan-400 flex items-center gap-1.5"><i class="fa-solid fa-language"></i> Translation</span>
+                        <button onclick="copyText('translation-box')" class="hover:text-white transition-colors"><i class="fa-regular fa-copy"></i></button>
+                    </div>
+                    <div id="translation-box" class="min-h-[70px] max-h-36 overflow-y-auto text-sm text-slate-200 outline-none whitespace-pre-wrap" contenteditable="true" placeholder="Simultaneous translation will appear here..."></div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex gap-3 pt-2">
+                <button onclick="saveVoiceNote()" class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white py-3 rounded-2xl font-semibold text-sm shadow-lg glow-effect flex items-center justify-center gap-2 transition-all">
+                    <i class="fa-solid fa-floppy-disk"></i> Save to Vault
+                </button>
+                <button onclick="clearCurrentNote()" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-2xl text-sm transition-all">
+                    <i class="fa-solid fa-rotate-right"></i>
                 </button>
             </div>
-        </section>
+        </div>
+
+        <!-- Tab 2: Vault / Saved Notes View -->
+        <div id="tab-vault" class="hidden space-y-3">
+            <div class="flex justify-between items-center">
+                <h2 class="text-sm font-bold text-slate-300 uppercase tracking-wider">Stored Notes Vault</h2>
+                <span id="vault-count" class="text-xs bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-xl text-indigo-400 font-mono">0 Notes</span>
+            </div>
+            <div id="vault-list" class="space-y-3">
+                <!-- Saved notes injected here -->
+            </div>
+        </div>
 
     </main>
 
-    <!-- Bottom Navigation Dock -->
-    <nav class="fixed bottom-3 left-1/2 -translate-x-1/2 w-[92%] max-w-md bg-slate-900/90 border border-slate-800 backdrop-blur-xl rounded-2xl p-2 flex justify-around items-center shadow-2xl z-30">
-        <button onclick="switchTab('recorder')" id="nav-btn-recorder" class="flex-1 py-2 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 text-indigo-400 bg-slate-800/80 transition">
-            <i class="fa-solid fa-microphone text-base"></i> Record
+    <!-- Bottom Navigation Bar -->
+    <nav class="absolute bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800/80 px-6 py-3 flex justify-around items-center z-20 backdrop-blur-md">
+        <button onclick="switchTab('record')" id="nav-btn-record" class="flex flex-col items-center gap-1 text-indigo-400 transition-colors">
+            <i class="fa-solid fa-microphone-lines text-lg"></i>
+            <span class="text-[10px] font-medium">Recorder</span>
         </button>
-        <button onclick="switchTab('notes')" id="nav-btn-notes" class="flex-1 py-2 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition">
-            <i class="fa-solid fa-box-archive text-base"></i> Vault
+
+        <!-- Big Center Mic Button -->
+        <button onclick="toggleRecording()" id="mic-main-btn" class="w-14 h-14 -mt-6 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl shadow-xl glow-effect transition-transform active:scale-95 focus:outline-none">
+            <i id="mic-icon" class="fa-solid fa-microphone"></i>
         </button>
-        <button onclick="switchTab('chat')" id="nav-btn-chat" class="flex-1 py-2 rounded-xl text-xs font-semibold flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition">
-            <i class="fa-solid fa-sparkles text-base"></i> AI Search
+
+        <button onclick="switchTab('vault')" id="nav-btn-vault" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
+            <i class="fa-solid fa-vault text-lg"></i>
+            <span class="text-[10px] font-medium">Vault</span>
         </button>
     </nav>
 
-    <!-- JavaScript Application Logic -->
+    <!-- JavaScript Logic -->
     <script>
-        const DEFAULT_TRANSCRIPT_TEXT = "Tap microphone button above and start speaking...";
-        const DEFAULT_TRANSLATION_TEXT = "Translation will generate automatically as you speak...";
-
-        let notesData = [];
-        try {
-            notesData = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
-        } catch(e) {
-            notesData = [];
-        }
-
-        let customCategories = [];
-        try {
-            customCategories = JSON.parse(localStorage.getItem('voicemind_categories') || '[]');
-        } catch(e) {
-            customCategories = [];
-        }
-
-        let mediaRecorder = null;
-        let audioChunks = [];
-        let audioBlob = null;
-        let speechRecognition = null;
+        let currentLang = 'ur';
         let isRecording = false;
+        let recognition = null;
         let timerInterval = null;
-        let waveInterval = null;
         let secondsElapsed = 0;
-        let translateDebounceTimeout = null;
-        let visualizerStyle = localStorage.getItem('voicemind_vis_style') || 'bar';
+        let finalTranscriptBuffer = '';
+        let interimTranscriptBuffer = '';
 
-        function toggleSettingsMenu(event) {
-            if (event) event.stopPropagation();
+        // Initialize App
+        window.addEventListener('DOMContentLoaded', () => {
+            initSpeechRecognition();
+            loadVaultNotes();
+            loadUserSettings();
+        });
+
+        // Settings Menu Toggle
+        function toggleSettingsMenu() {
             const menu = document.getElementById('settings-menu');
             menu.classList.toggle('hidden');
         }
 
-        document.addEventListener('click', (e) => {
-            const menu = document.getElementById('settings-menu');
-            const btn = document.getElementById('settings-toggle-btn');
-            if (menu && !menu.contains(e.target) && !btn?.contains(e.target)) {
-                menu.classList.add('hidden');
+        // Theme Switcher
+        function changeTheme(theme) {
+            const body = document.getElementById('app-body');
+            body.className = 'text-slate-100 font-sans h-full overflow-hidden flex flex-col';
+            if(theme === 'midnight') body.classList.add('bg-blue-950');
+            else if(theme === 'emerald') body.classList.add('bg-emerald-950');
+            else if(theme === 'sunset') body.classList.add('bg-purple-950');
+            else if(theme === 'cyberpunk') body.classList.add('bg-zinc-950');
+            else body.classList.add('bg-slate-950');
+            localStorage.setItem('voicemind_theme', theme);
+        }
+
+        function loadUserSettings() {
+            const savedTheme = localStorage.getItem('voicemind_theme');
+            if(savedTheme) {
+                document.getElementById('setting-theme').value = savedTheme;
+                changeTheme(savedTheme);
             }
-        });
-
-        function changeTheme(themeName) {
-            document.body.className = `${themeName} text-slate-100 font-sans h-full overflow-hidden flex flex-col`;
-            localStorage.setItem('voicemind_theme', themeName);
-            showNotification(`Theme updated!`);
         }
 
-        function changeVisualizerStyle(style) {
-            visualizerStyle = style;
-            localStorage.setItem('voicemind_vis_style', style);
-            showNotification(`Visualizer set to ${style === 'bar' ? 'Pulsating Bars' : 'Sinusoidal Wave'}`);
+        function changeSpectrumStyle(style) {
+            localStorage.setItem('voicemind_spectrum', style);
         }
 
-        function addCustomCategory() {
-            const input = document.getElementById('custom-cat-input');
-            const catName = input.value.trim();
-            if (!catName) return;
+        // Add Category
+        function addNewCategory() {
+            const input = document.getElementById('new-category-input');
+            const val = input.value.trim();
+            if(!val) return;
+            const select = document.getElementById('note-category');
+            const opt = document.createElement('option');
+            opt.value = val;
+            opt.textContent = '🏷️ ' + val;
+            select.appendChild(opt);
+            select.value = val;
+            input.value = '';
+            toggleSettingsMenu();
+        }
 
-            if (!customCategories.includes(catName)) {
-                customCategories.push(catName);
-                localStorage.setItem('voicemind_categories', JSON.stringify(customCategories));
-                updateCategoryDropdowns();
-                input.value = '';
-                showNotification(`Category "${catName}" added!`);
+        // Language Selector
+        function setLanguage(lang) {
+            currentLang = lang;
+            if(lang === 'ur') {
+                document.getElementById('lang-ur-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all';
+                document.getElementById('lang-en-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 transition-all';
             } else {
-                showNotification(`Category already exists!`, 'error');
+                document.getElementById('lang-en-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all';
+                document.getElementById('lang-ur-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 transition-all';
+            }
+            if(isRecording) {
+                stopRecording();
+                startRecording();
+            } else {
+                initSpeechRecognition();
             }
         }
 
-        function updateCategoryDropdowns() {
-            const recSelect = document.getElementById('rec-category');
-            const filterSelect = document.getElementById('filter-cat');
-
-            let recOptions = `<option value="Auto-Detect" selected>🪄 Auto-Detect</option>
-                              <option value="Idea">💡 Idea</option>
-                              <option value="Memory">🧠 Memory</option>
-                              <option value="Assignment">📋 Assignment</option>
-                              <option value="Reminder">⏰ Reminder</option>`;
-            
-            let filterOptions = `<option value="All">All Categories</option>
-                                <option value="Idea">Idea</option>
-                                <option value="Memory">Memory</option>
-                                <option value="Assignment">Assignment</option>
-                                <option value="Reminder">Reminder</option>`;
-
-            customCategories.forEach(cat => {
-                recOptions += `<option value="${cat}">🏷️ ${cat}</option>`;
-                filterOptions += `<option value="${cat}">${cat}</option>`;
-            });
-
-            if (recSelect) recSelect.innerHTML = recOptions;
-            if (filterSelect) filterSelect.innerHTML = filterOptions;
-        }
-
-        function autoDetectCategory(text) {
-            const lower = text.toLowerCase();
-            
-            if (/remember|reminder|don't forget|alarm|schedule|today|tomorrow|کو یاد رکھنا|یاد دہانی|کل|آج|وقت/.test(lower)) {
-                return 'Reminder';
+        // Speech Recognition Setup
+        function initSpeechRecognition() {
+            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+            if (!SpeechRecognition) {
+                alert("Speech recognition is not supported in this browser. Please use Google Chrome.");
+                return;
             }
-            if (/task|assignment|homework|project|submit|due|work|ہوم ورک|اسائنمنٹ|کام|جمع/.test(lower)) {
-                return 'Assignment';
-            }
-            if (/idea|thought|what if|how about|concept|create|build|تصور|خیال|سوچ|نیا/.test(lower)) {
-                return 'Idea';
-            }
-            if (/memories|memory|happened|remember when|past|journal|یادیں|یاد|ماضی|واقعہ/.test(lower)) {
-                return 'Memory';
-            }
+            recognition = new SpeechRecognition();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = currentLang === 'ur' ? 'ur-PK' : 'en-US';
 
-            return 'Idea';
-        }
-
-        function showNotification(message, type = 'info') {
-            const container = document.getElementById('toast-container');
-            if (!container) return;
-
-            const toast = document.createElement('div');
-            const bgClass = type === 'error' ? 'bg-rose-900/90 border-rose-700' : 'bg-slate-900/90 border-indigo-500/50';
-            toast.className = `pointer-events-auto px-4 py-2.5 rounded-xl border ${bgClass} backdrop-blur-md text-xs font-medium text-slate-100 shadow-xl transition-all duration-300 opacity-0 transform translate-y-2 flex items-center gap-2`;
-            
-            const icon = type === 'error' ? 'fa-triangle-exclamation text-rose-400' : 'fa-circle-check text-indigo-400';
-            toast.innerHTML = `<i class="fa-solid ${icon}"></i> <span>${message}</span>`;
-            
-            container.appendChild(toast);
-            setTimeout(() => {
-                toast.classList.remove('opacity-0', 'translate-y-2');
-            }, 10);
-
-            setTimeout(() => {
-                toast.classList.add('opacity-0', '-translate-y-2');
-                setTimeout(() => toast.remove(), 300);
-            }, 3000);
-        }
-
-        // Initialize Web Speech API
-        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
-            const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
-            speechRecognition = new SpeechRec();
-            speechRecognition.continuous = true;
-            speechRecognition.interimResults = true;
-
-            speechRecognition.onresult = (e) => {
-                let liveText = '';
-                for (let i = e.resultIndex; i < e.results.length; ++i) {
-                    liveText += e.results[i][0].transcript;
+            recognition.onresult = (event) => {
+                interimTranscriptBuffer = '';
+                for (let i = event.resultIndex; i < event.results.length; ++i) {
+                    if (event.results[i].isFinal) {
+                        finalTranscriptBuffer += event.results[i][0].transcript + ' ';
+                    } else {
+                        interimTranscriptBuffer += event.results[i][0].transcript;
+                    }
                 }
-                if (liveText.trim()) {
-                    const box = document.getElementById('transcript-box');
-                    if (box) box.innerText = liveText;
+                const fullText = finalTranscriptBuffer + interimTranscriptBuffer;
+                const transcriptBox = document.getElementById('transcript-box');
+                transcriptBox.innerText = fullText;
+                if(currentLang === 'ur') {
+                    transcriptBox.classList.add('urdu-text');
+                } else {
+                    transcriptBox.classList.remove('urdu-text');
+                }
+                
+                // Real-time simulated simultaneous translation update
+                updateTranslation(fullText);
+            };
 
-                    clearTimeout(translateDebounceTimeout);
-                    translateDebounceTimeout = setTimeout(async () => {
-                        const lang = document.getElementById('rec-language').value;
-                        const translationBox = document.getElementById('translation-box');
-                        const translated = await translateText(liveText, lang);
-                        if (translationBox) translationBox.innerText = translated;
-                    }, 300);
+            recognition.onerror = (event) => {
+                console.warn('Speech recognition error:', event.error);
+            };
+
+            recognition.onend = () => {
+                if (isRecording) {
+                    try { recognition.start(); } catch(e) {}
                 }
             };
         }
 
-        function animateWaveform(active) {
-            const bars = document.querySelectorAll('.wave-bar');
-            if (active) {
-                let phase = 0;
-                waveInterval = setInterval(() => {
-                    phase += 0.2;
-                    bars.forEach((bar, idx) => {
-                        let height = 8;
-                        if (visualizerStyle === 'wave') {
-                            height = Math.sin(phase + idx * 0.6) * 18 + 26;
-                        } else {
-                            height = Math.floor(Math.random() * 40) + 8;
-                        }
-                        bar.style.height = `${height}px`;
-                        bar.classList.replace('bg-slate-700', 'bg-indigo-400');
-                    });
-                }, 120);
-            } else {
-                clearInterval(waveInterval);
-                bars.forEach((bar, idx) => {
-                    const defaultHeights = [16, 32, 48, 24, 56, 32, 16];
-                    bar.style.height = `${defaultHeights[idx % defaultHeights.length]}px`;
-                    bar.classList.replace('bg-indigo-400', 'bg-slate-700');
-                });
-            }
-        }
-
-        async function toggleRecording() {
+        // Toggle Recording
+        function toggleRecording() {
             if (isRecording) {
-                stopRecordingProcess();
+                stopRecording();
             } else {
-                await startRecordingProcess();
+                startRecording();
             }
         }
 
-        async function startRecordingProcess() {
-            try {
-                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
-                audioChunks = [];
-
-                mediaRecorder.ondataavailable = (e) => {
-                    if (e.data.size > 0) audioChunks.push(e.data);
-                };
-                mediaRecorder.onstop = () => {
-                    audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-                };
-
-                mediaRecorder.start();
-
-                const lang = document.getElementById('rec-language').value;
-                if (speechRecognition) {
-                    speechRecognition.lang = lang;
-                    try { speechRecognition.start(); } catch(e) {}
-                }
-
-                isRecording = true;
-                secondsElapsed = 0;
-                document.getElementById('recording-timer').innerText = "00:00";
-                
-                const box = document.getElementById('transcript-box');
-                if (box && box.innerText.includes("Tap microphone")) {
-                    box.innerText = "";
-                }
-
-                timerInterval = setInterval(() => {
-                    secondsElapsed++;
-                    const m = String(Math.floor(secondsElapsed / 60)).padStart(2, '0');
-                    const s = String(secondsElapsed % 60).padStart(2, '0');
-                    document.getElementById('recording-timer').innerText = `${m}:${s}`;
-                }, 1000);
-
-                animateWaveform(true);
-
-                document.getElementById('mic-btn').classList.replace('bg-indigo-600', 'bg-red-600');
-                document.getElementById('mic-icon').classList.replace('fa-microphone', 'fa-square');
-                document.getElementById('status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-red-500 animate-ping"></span> Recording`;
-                showNotification("Recording started...");
-            } catch (err) {
-                showNotification("Microphone access denied or not supported.", "error");
-            }
-        }
-
-        function stopRecordingProcess() {
-            if (mediaRecorder && mediaRecorder.state !== "inactive") mediaRecorder.stop();
-            if (speechRecognition) {
-                try { speechRecognition.stop(); } catch(e) {}
-            }
-            clearInterval(timerInterval);
-            animateWaveform(false);
-            isRecording = false;
-
-            document.getElementById('mic-btn').classList.replace('bg-red-600', 'bg-indigo-600');
-            document.getElementById('mic-icon').classList.replace('fa-square', 'fa-microphone');
-            document.getElementById('status-badge').innerHTML = `<span class="w-2 h-2 rounded-full bg-emerald-500"></span> Ready`;
-            showNotification("Recording stopped");
-        }
-
-        function clearTranscript() {
-            document.getElementById('transcript-box').innerText = DEFAULT_TRANSCRIPT_TEXT;
-            document.getElementById('translation-box').innerText = DEFAULT_TRANSLATION_TEXT;
-        }
-
-        async function translateText(text, lang) {
-            try {
-                const targetLang = lang.startsWith('ur') ? 'en' : 'ur';
-                const srcLang = lang.startsWith('ur') ? 'ur' : 'en';
-                const res = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${srcLang}|${targetLang}`);
-                const data = await res.json();
-                return data.responseData?.translatedText || text;
-            } catch {
-                return "Translation unavailable (offline)";
-            }
-        }
-
-        async function saveVoiceNote() {
-            if (isRecording) {
-                stopRecordingProcess();
-            }
-
-            const transcriptBox = document.getElementById('transcript-box');
-            const transcript = transcriptBox ? transcriptBox.innerText.trim() : "";
+        function startRecording() {
+            isRecording = true;
+            finalTranscriptBuffer = '';
+            interimTranscriptBuffer = '';
+            document.getElementById('transcript-box').innerText = '';
+            document.getElementById('translation-box').innerText = '';
             
-            if (!transcript || transcript.includes("Tap microphone")) {
-                showNotification("Please record or write some text first!", "error");
+            try {
+                recognition.start();
+            } catch(e) {}
+
+            const micBtn = document.getElementById('mic-main-btn');
+            micBtn.classList.add('bg-rose-600', 'from-rose-600', 'to-red-500', 'animate-pulse');
+            document.getElementById('mic-icon').className = 'fa-solid fa-stop';
+            document.getElementById('visualizer-status').innerText = 'Listening live...';
+            document.getElementById('timer-dot').className = 'w-2 h-2 rounded-full bg-rose-500 animate-ping';
+            
+            secondsElapsed = 0;
+            timerInterval = setInterval(() => {
+                secondsElapsed++;
+                let mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+                let secs = (secondsElapsed % 60).toString().padStart(2, '0');
+                document.getElementById('recording-timer').innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> ${mins}:${secs}`;
+            }, 1000);
+        }
+
+        function stopRecording() {
+            isRecording = false;
+            try { recognition.stop(); } catch(e) {}
+            clearInterval(timerInterval);
+
+            const micBtn = document.getElementById('mic-main-btn');
+            micBtn.classList.remove('bg-rose-600', 'from-rose-600', 'to-red-500', 'animate-pulse');
+            document.getElementById('mic-icon').className = 'fa-solid fa-microphone';
+            document.getElementById('visualizer-status').innerText = 'Tap microphone to begin listening';
+            document.getElementById('timer-dot').className = 'w-2 h-2 rounded-full bg-slate-600';
+            document.getElementById('recording-timer').innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-600 inline-block"></span> 00:00`;
+        }
+
+        // Simultaneous Translation Placeholder/Simulation Logic
+        function updateTranslation(text) {
+            const transBox = document.getElementById('translation-box');
+            if(!text.trim()) {
+                transBox.innerText = '';
+                return;
+            }
+            if(currentLang === 'ur') {
+                transBox.classList.remove('urdu-text');
+                transBox.innerText = "[English translation] " + text;
+            } else {
+                transBox.classList.add('urdu-text');
+                transBox.innerText = "[اردو ترجمہ] " + text;
+            }
+        }
+
+        // Save Voice Note to LocalStorage Vault
+        function saveVoiceNote() {
+            const transcript = document.getElementById('transcript-box').innerText.trim();
+            const translation = document.getElementById('translation-box').innerText.trim();
+            const category = document.getElementById('note-category').value;
+
+            if (!transcript) {
+                alert("No transcript found to save!");
                 return;
             }
 
-            let category = document.getElementById('rec-category').value;
-            if (category === 'Auto-Detect') {
-                category = autoDetectCategory(transcript);
-                showNotification(`Category auto-detected as "${category}"`);
-            }
-
-            const language = document.getElementById('rec-language').value;
-            
-            let translation = document.getElementById('translation-box').innerText.trim();
-            if (!translation || translation.includes("Translation will generate")) {
-                document.getElementById('translation-box').innerText = "Translating text...";
-                translation = await translateText(transcript, language);
-                document.getElementById('translation-box').innerText = translation;
-            }
-
-            let audioDataUrl = "";
-            if (audioBlob) {
-                audioDataUrl = await new Promise(r => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => r(reader.result);
-                    reader.readAsDataURL(audioBlob);
-                });
-            }
-
-            const newEntry = {
+            const notes = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
+            const newNote = {
                 id: Date.now(),
+                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
                 category: category,
-                language: language,
                 transcript: transcript,
                 translation: translation,
-                audio: audioDataUrl,
-                date: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
+                lang: currentLang
             };
 
-            notesData.unshift(newEntry);
-            try {
-                localStorage.setItem('voicemind_notes', JSON.stringify(notesData));
-            } catch(e) {}
-            
-            renderNotes();
-            showNotification("Voice Note saved to Vault!");
+            notes.unshift(newNote);
+            localStorage.setItem('voicemind_notes', JSON.stringify(notes));
 
-            // Full Recorder State Reset
-            resetRecorderForm();
+            // Reset UI
+            clearCurrentNote();
+            loadVaultNotes();
+            switchTab('vault');
         }
 
-        function resetRecorderForm() {
-            // Reset text boxes
-            document.getElementById('transcript-box').innerText = DEFAULT_TRANSCRIPT_TEXT;
-            document.getElementById('translation-box').innerText = DEFAULT_TRANSLATION_TEXT;
-
-            // Reset timer & audio state
-            document.getElementById('recording-timer').innerText = "00:00";
-            secondsElapsed = 0;
-            audioChunks = [];
-            audioBlob = null;
-
-            // Reset Category select back to Auto-Detect
-            document.getElementById('rec-category').value = 'Auto-Detect';
+        function clearCurrentNote() {
+            if(isRecording) stopRecording();
+            finalTranscriptBuffer = '';
+            interimTranscriptBuffer = '';
+            document.getElementById('transcript-box').innerText = '';
+            document.getElementById('translation-box').innerText = '';
         }
 
-        function deleteNote(id) {
-            notesData = notesData.filter(item => item.id !== id);
-            try {
-                localStorage.setItem('voicemind_notes', JSON.stringify(notesData));
-            } catch(e) {}
-            renderNotes();
-            showNotification("Note removed");
-        }
+        // Load Vault Stored Notes
+        function loadVaultNotes() {
+            const notes = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
+            const listEl = document.getElementById('vault-list');
+            document.getElementById('vault-count').innerText = `${notes.length} Notes`;
 
-        function renderNotes() {
-            const container = document.getElementById('notes-list');
-            if (!container) return;
-            
-            const query = document.getElementById('search-input')?.value.toLowerCase() || "";
-            const filter = document.getElementById('filter-cat')?.value || "All";
-
-            const filtered = notesData.filter(item => {
-                const matchSearch = item.transcript.toLowerCase().includes(query) || item.translation.toLowerCase().includes(query);
-                const matchFilter = filter === 'All' || item.category === filter;
-                return matchSearch && matchFilter;
-            });
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div class="text-center text-slate-500 py-12 text-xs">No saved voice notes found.</div>`;
+            if (notes.length === 0) {
+                listEl.innerHTML = `
+                    <div class="text-center py-12 text-slate-500 text-xs">
+                        <i class="fa-solid fa-box-open text-2xl mb-2"></i>
+                        <p>Your vault is empty. Save notes to view them here.</p>
+                    </div>
+                `;
                 return;
             }
 
-            container.innerHTML = filtered.map(item => `
-                <div class="glass-card rounded-xl p-4 space-y-2 relative group">
-                    <div class="flex justify-between items-center text-xs">
-                        <span class="px-2.5 py-0.5 rounded-full bg-indigo-500/20 text-indigo-300 font-semibold border border-indigo-500/30">${item.category}</span>
-                        <div class="flex items-center gap-3">
-                            <span class="text-[11px] text-slate-500">${item.date}</span>
-                            <button onclick="deleteNote(${item.id})" class="text-slate-500 hover:text-rose-400 transition" title="Delete Note">
-                                <i class="fa-solid fa-trash-can text-xs"></i>
-                            </button>
+            listEl.innerHTML = notes.map(note => `
+                <div class="glass-card rounded-2xl p-4 space-y-2 relative group">
+                    <div class="flex justify-between items-center text-[11px] text-slate-400 border-b border-slate-800 pb-2">
+                        <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md font-medium">🏷️ ${note.category}</span>
+                        <div class="flex items-center gap-2">
+                            <span>${note.date}</span>
+                            <button onclick="deleteNote(${note.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash-can"></i></button>
                         </div>
                     </div>
-                    <p class="text-sm text-slate-200 font-medium leading-relaxed">${item.transcript}</p>
-                    <p class="text-xs text-cyan-300/90 border-t border-slate-800/80 pt-2 ${item.language.startsWith('ur') ? 'urdu-text' : ''}" dir="auto">${item.translation}</p>
-                    ${item.audio ? `<audio controls src="${item.audio}" class="w-full h-8 mt-2 rounded-lg opacity-90"></audio>` : ''}
+                    <div class="text-xs text-slate-200 whitespace-pre-wrap ${note.lang === 'ur' ? 'urdu-text' : ''}">${note.transcript}</div>
+                    ${note.translation ? `<div class="text-xs text-cyan-300/80 pt-2 border-t border-slate-800/60 whitespace-pre-wrap">${note.translation}</div>` : ''}
                 </div>
             `).join('');
         }
 
-        function switchTab(tab) {
-            ['recorder', 'notes', 'chat'].forEach(t => {
-                document.getElementById(`tab-${t}`)?.classList.add('hidden');
-                document.getElementById(`nav-btn-${t}`)?.classList.remove('text-indigo-400', 'bg-slate-800/80');
-                document.getElementById(`nav-btn-${t}`)?.classList.add('text-slate-400');
-            });
-
-            document.getElementById(`tab-${tab}`)?.classList.remove('hidden');
-            document.getElementById(`nav-btn-${tab}`)?.classList.add('text-indigo-400', 'bg-slate-800/80');
-            document.getElementById(`nav-btn-${tab}`)?.classList.remove('text-slate-400');
-
-            if (tab === 'notes') renderNotes();
+        function deleteNote(id) {
+            let notes = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
+            notes = notes.filter(n => n.id !== id);
+            localStorage.setItem('voicemind_notes', JSON.stringify(notes));
+            loadVaultNotes();
         }
 
-        function handleChatQuery() {
-            const input = document.getElementById('chat-input');
-            const text = input ? input.value.trim() : '';
-            if (!text) return;
+        // Tab Switching
+        function switchTab(tab) {
+            const recordTab = document.getElementById('tab-record');
+            const vaultTab = document.getElementById('tab-vault');
+            const recBtn = document.getElementById('nav-btn-record');
+            const vaultNavBtn = document.getElementById('nav-btn-vault');
 
-            const chatBox = document.getElementById('chat-box');
-            if (chatBox) {
-                chatBox.innerHTML += `<div class="bg-indigo-600/30 border border-indigo-500/30 p-2.5 rounded-xl max-w-[85%] ml-auto text-xs text-slate-200">${text}</div>`;
-                input.value = '';
-                chatBox.scrollTop = chatBox.scrollHeight;
-
-                setTimeout(() => {
-                    const matches = notesData.filter(n => 
-                        n.transcript.toLowerCase().includes(text.toLowerCase()) || 
-                        n.translation.toLowerCase().includes(text.toLowerCase()) || 
-                        n.category.toLowerCase().includes(text.toLowerCase())
-                    );
-                    
-                    let reply = matches.length > 0 
-                        ? `Found ${matches.length} matching note(s):\n\n` + matches.map((m, i) => `${i+1}. [${m.category}] "${m.transcript}"`).join('\n')
-                        : `No stored notes match "${text}". Try searching for categories like Idea, Assignment, Memory, or Reminder.`;
-
-                    chatBox.innerHTML += `<div class="bg-slate-900 border border-slate-800 p-3 rounded-xl max-w-[85%] text-xs text-slate-200 whitespace-pre-line leading-relaxed"><i class="fa-solid fa-robot text-indigo-400 mr-1"></i> ${reply}</div>`;
-                    chatBox.scrollTop = chatBox.scrollHeight;
-                }, 300);
+            if (tab === 'record') {
+                recordTab.classList.remove('hidden');
+                vaultTab.classList.add('hidden');
+                recBtn.className = 'flex flex-col items-center gap-1 text-indigo-400 transition-colors';
+                vaultNavBtn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors';
+            } else {
+                recordTab.classList.add('hidden');
+                vaultTab.classList.remove('hidden');
+                vaultNavBtn.className = 'flex flex-col items-center gap-1 text-indigo-400 transition-colors';
+                recBtn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors';
+                loadVaultNotes();
             }
         }
 
-        // Initialize Settings on startup
-        const savedTheme = localStorage.getItem('voicemind_theme') || 'theme-indigo';
-        document.body.className = `${savedTheme} text-slate-100 font-sans h-full overflow-hidden flex flex-col`;
-        const themeSel = document.getElementById('theme-selector');
-        if (themeSel) themeSel.value = savedTheme;
-
-        const visSel = document.getElementById('vis-style-selector');
-        if (visSel) visSel.value = visualizerStyle;
-
-        updateCategoryDropdowns();
-        renderNotes();
+        // Copy Text Helper
+        function copyText(elementId) {
+            const text = document.getElementById(elementId).innerText;
+            navigator.clipboard.writeText(text);
+            alert("Copied to clipboard!");
+        }
     </script>
 </body>
 </html>
