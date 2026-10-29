@@ -60,7 +60,7 @@
                     <div>
                         <label class="block text-[11px] text-slate-400 mb-1">Theme Style</label>
                         <select id="setting-theme" onchange="changeTheme(this.value)" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-2.5 py-1.5 text-xs text-slate-200 focus:outline-none">
-                            <option value="slate">🌌 Dark Slate</option>
+                            <option value="slate">🌌 Dark Slate (Default)</option>
                             <option value="midnight">🌙 Midnight Blue</option>
                             <option value="emerald">🌲 Emerald Forest</option>
                             <option value="sunset">🌅 Sunset Purple</option>
@@ -79,9 +79,9 @@
 
                     <!-- Add Custom Category -->
                     <div class="pt-1 border-t border-slate-800">
-                        <label class="block text-[11px] text-slate-400 mb-1">Add Category</label>
+                        <label class="block text-[11px] text-slate-400 mb-1">Add New Category</label>
                         <div class="flex gap-1.5">
-                            <input type="text" id="new-category-input" placeholder="New name..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-slate-200 focus:outline-none">
+                            <input type="text" id="new-category-input" placeholder="Category name..." class="flex-1 bg-slate-900 border border-slate-700 rounded-xl px-2 py-1 text-xs text-slate-200 focus:outline-none">
                             <button onclick="addNewCategory()" class="bg-indigo-600 hover:bg-indigo-500 text-white px-2.5 py-1 rounded-xl text-xs"><i class="fa-solid fa-plus"></i></button>
                         </div>
                     </div>
@@ -90,7 +90,7 @@
 
             <div>
                 <h1 class="font-bold text-lg leading-none bg-gradient-to-r from-indigo-300 via-cyan-300 to-white bg-clip-text text-transparent">VoiceMind AI</h1>
-                <p class="text-[11px] text-slate-400 mt-1">Bilingual Voice Vault</p>
+                <p class="text-[11px] text-slate-400 mt-1">Live Recorder</p>
             </div>
         </div>
 
@@ -124,7 +124,6 @@
             <div class="glass-card rounded-2xl p-4 flex flex-col items-center justify-center h-28 relative overflow-hidden">
                 <div class="absolute inset-0 bg-gradient-to-r from-indigo-500/5 via-cyan-500/5 to-transparent pointer-events-none"></div>
                 <div id="visualizer-container" class="flex items-center gap-1 h-12 w-full justify-center">
-                    <!-- Dynamic bars will render here -->
                     <div class="w-1 bg-indigo-500/30 h-4 rounded-full animate-pulse"></div>
                     <div class="w-1 bg-indigo-500/50 h-8 rounded-full animate-pulse"></div>
                     <div class="w-1 bg-cyan-400 h-12 rounded-full animate-pulse"></div>
@@ -142,7 +141,7 @@
                         <span class="font-semibold text-indigo-400 flex items-center gap-1.5"><i class="fa-solid fa-microphone"></i> Live Transcript</span>
                         <button onclick="copyText('transcript-box')" class="hover:text-white transition-colors"><i class="fa-regular fa-copy"></i></button>
                     </div>
-                    <div id="transcript-box" class="min-h-[70px] max-h-36 overflow-y-auto text-sm text-slate-200 outline-none whitespace-pre-wrap" contenteditable="true" placeholder="Speech transcript will appear here..."></div>
+                    <div id="transcript-box" class="min-h-[70px] max-h-36 overflow-y-auto text-sm text-slate-200 outline-none whitespace-pre-wrap urdu-text" contenteditable="true" placeholder="Speech transcript will appear here..."></div>
                 </div>
 
                 <!-- Translated Text -->
@@ -156,339 +155,4 @@
             </div>
 
             <!-- Action Buttons -->
-            <div class="flex gap-3 pt-2">
-                <button onclick="saveVoiceNote()" class="flex-1 bg-gradient-to-r from-indigo-600 to-indigo-700 hover:from-indigo-500 hover:to-indigo-600 text-white py-3 rounded-2xl font-semibold text-sm shadow-lg glow-effect flex items-center justify-center gap-2 transition-all">
-                    <i class="fa-solid fa-floppy-disk"></i> Save to Vault
-                </button>
-                <button onclick="clearCurrentNote()" class="bg-slate-900 border border-slate-800 hover:bg-slate-800 text-slate-300 px-4 py-3 rounded-2xl text-sm transition-all">
-                    <i class="fa-solid fa-rotate-right"></i>
-                </button>
-            </div>
-        </div>
-
-        <!-- Tab 2: Vault / Saved Notes View -->
-        <div id="tab-vault" class="hidden space-y-3">
-            <div class="flex justify-between items-center">
-                <h2 class="text-sm font-bold text-slate-300 uppercase tracking-wider">Stored Notes Vault</h2>
-                <span id="vault-count" class="text-xs bg-slate-900 border border-slate-800 px-2.5 py-1 rounded-xl text-indigo-400 font-mono">0 Notes</span>
-            </div>
-            <div id="vault-list" class="space-y-3">
-                <!-- Saved notes injected here -->
-            </div>
-        </div>
-
-    </main>
-
-    <!-- Bottom Navigation Bar -->
-    <nav class="absolute bottom-0 left-0 right-0 bg-slate-900/95 border-t border-slate-800/80 px-6 py-3 flex justify-around items-center z-20 backdrop-blur-md">
-        <button onclick="switchTab('record')" id="nav-btn-record" class="flex flex-col items-center gap-1 text-indigo-400 transition-colors">
-            <i class="fa-solid fa-microphone-lines text-lg"></i>
-            <span class="text-[10px] font-medium">Recorder</span>
-        </button>
-
-        <!-- Big Center Mic Button -->
-        <button onclick="toggleRecording()" id="mic-main-btn" class="w-14 h-14 -mt-6 rounded-full bg-gradient-to-tr from-indigo-600 via-indigo-500 to-cyan-400 flex items-center justify-center text-white text-xl shadow-xl glow-effect transition-transform active:scale-95 focus:outline-none">
-            <i id="mic-icon" class="fa-solid fa-microphone"></i>
-        </button>
-
-        <button onclick="switchTab('vault')" id="nav-btn-vault" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors">
-            <i class="fa-solid fa-vault text-lg"></i>
-            <span class="text-[10px] font-medium">Vault</span>
-        </button>
-    </nav>
-
-    <!-- JavaScript Logic -->
-    <script>
-        let currentLang = 'ur';
-        let isRecording = false;
-        let recognition = null;
-        let timerInterval = null;
-        let secondsElapsed = 0;
-        let finalTranscriptBuffer = '';
-        let interimTranscriptBuffer = '';
-
-        // Initialize App
-        window.addEventListener('DOMContentLoaded', () => {
-            initSpeechRecognition();
-            loadVaultNotes();
-            loadUserSettings();
-        });
-
-        // Settings Menu Toggle
-        function toggleSettingsMenu() {
-            const menu = document.getElementById('settings-menu');
-            menu.classList.toggle('hidden');
-        }
-
-        // Theme Switcher
-        function changeTheme(theme) {
-            const body = document.getElementById('app-body');
-            body.className = 'text-slate-100 font-sans h-full overflow-hidden flex flex-col';
-            if(theme === 'midnight') body.classList.add('bg-blue-950');
-            else if(theme === 'emerald') body.classList.add('bg-emerald-950');
-            else if(theme === 'sunset') body.classList.add('bg-purple-950');
-            else if(theme === 'cyberpunk') body.classList.add('bg-zinc-950');
-            else body.classList.add('bg-slate-950');
-            localStorage.setItem('voicemind_theme', theme);
-        }
-
-        function loadUserSettings() {
-            const savedTheme = localStorage.getItem('voicemind_theme');
-            if(savedTheme) {
-                document.getElementById('setting-theme').value = savedTheme;
-                changeTheme(savedTheme);
-            }
-        }
-
-        function changeSpectrumStyle(style) {
-            localStorage.setItem('voicemind_spectrum', style);
-        }
-
-        // Add Category
-        function addNewCategory() {
-            const input = document.getElementById('new-category-input');
-            const val = input.value.trim();
-            if(!val) return;
-            const select = document.getElementById('note-category');
-            const opt = document.createElement('option');
-            opt.value = val;
-            opt.textContent = '🏷️ ' + val;
-            select.appendChild(opt);
-            select.value = val;
-            input.value = '';
-            toggleSettingsMenu();
-        }
-
-        // Language Selector
-        function setLanguage(lang) {
-            currentLang = lang;
-            if(lang === 'ur') {
-                document.getElementById('lang-ur-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all';
-                document.getElementById('lang-en-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 transition-all';
-            } else {
-                document.getElementById('lang-en-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-semibold bg-indigo-600 text-white transition-all';
-                document.getElementById('lang-ur-btn').className = 'px-3 py-1.5 rounded-lg text-xs font-medium text-slate-400 transition-all';
-            }
-            if(isRecording) {
-                stopRecording();
-                startRecording();
-            } else {
-                initSpeechRecognition();
-            }
-        }
-
-        // Speech Recognition Setup
-        function initSpeechRecognition() {
-            const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-            if (!SpeechRecognition) {
-                alert("Speech recognition is not supported in this browser. Please use Google Chrome.");
-                return;
-            }
-            recognition = new SpeechRecognition();
-            recognition.continuous = true;
-            recognition.interimResults = true;
-            recognition.lang = currentLang === 'ur' ? 'ur-PK' : 'en-US';
-
-            recognition.onresult = (event) => {
-                interimTranscriptBuffer = '';
-                for (let i = event.resultIndex; i < event.results.length; ++i) {
-                    if (event.results[i].isFinal) {
-                        finalTranscriptBuffer += event.results[i][0].transcript + ' ';
-                    } else {
-                        interimTranscriptBuffer += event.results[i][0].transcript;
-                    }
-                }
-                const fullText = finalTranscriptBuffer + interimTranscriptBuffer;
-                const transcriptBox = document.getElementById('transcript-box');
-                transcriptBox.innerText = fullText;
-                if(currentLang === 'ur') {
-                    transcriptBox.classList.add('urdu-text');
-                } else {
-                    transcriptBox.classList.remove('urdu-text');
-                }
-                
-                // Real-time simulated simultaneous translation update
-                updateTranslation(fullText);
-            };
-
-            recognition.onerror = (event) => {
-                console.warn('Speech recognition error:', event.error);
-            };
-
-            recognition.onend = () => {
-                if (isRecording) {
-                    try { recognition.start(); } catch(e) {}
-                }
-            };
-        }
-
-        // Toggle Recording
-        function toggleRecording() {
-            if (isRecording) {
-                stopRecording();
-            } else {
-                startRecording();
-            }
-        }
-
-        function startRecording() {
-            isRecording = true;
-            finalTranscriptBuffer = '';
-            interimTranscriptBuffer = '';
-            document.getElementById('transcript-box').innerText = '';
-            document.getElementById('translation-box').innerText = '';
-            
-            try {
-                recognition.start();
-            } catch(e) {}
-
-            const micBtn = document.getElementById('mic-main-btn');
-            micBtn.classList.add('bg-rose-600', 'from-rose-600', 'to-red-500', 'animate-pulse');
-            document.getElementById('mic-icon').className = 'fa-solid fa-stop';
-            document.getElementById('visualizer-status').innerText = 'Listening live...';
-            document.getElementById('timer-dot').className = 'w-2 h-2 rounded-full bg-rose-500 animate-ping';
-            
-            secondsElapsed = 0;
-            timerInterval = setInterval(() => {
-                secondsElapsed++;
-                let mins = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
-                let secs = (secondsElapsed % 60).toString().padStart(2, '0');
-                document.getElementById('recording-timer').innerHTML = `<span class="w-2 h-2 rounded-full bg-rose-500 inline-block"></span> ${mins}:${secs}`;
-            }, 1000);
-        }
-
-        function stopRecording() {
-            isRecording = false;
-            try { recognition.stop(); } catch(e) {}
-            clearInterval(timerInterval);
-
-            const micBtn = document.getElementById('mic-main-btn');
-            micBtn.classList.remove('bg-rose-600', 'from-rose-600', 'to-red-500', 'animate-pulse');
-            document.getElementById('mic-icon').className = 'fa-solid fa-microphone';
-            document.getElementById('visualizer-status').innerText = 'Tap microphone to begin listening';
-            document.getElementById('timer-dot').className = 'w-2 h-2 rounded-full bg-slate-600';
-            document.getElementById('recording-timer').innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-600 inline-block"></span> 00:00`;
-        }
-
-        // Simultaneous Translation Placeholder/Simulation Logic
-        function updateTranslation(text) {
-            const transBox = document.getElementById('translation-box');
-            if(!text.trim()) {
-                transBox.innerText = '';
-                return;
-            }
-            if(currentLang === 'ur') {
-                transBox.classList.remove('urdu-text');
-                transBox.innerText = "[English translation] " + text;
-            } else {
-                transBox.classList.add('urdu-text');
-                transBox.innerText = "[اردو ترجمہ] " + text;
-            }
-        }
-
-        // Save Voice Note to LocalStorage Vault
-        function saveVoiceNote() {
-            const transcript = document.getElementById('transcript-box').innerText.trim();
-            const translation = document.getElementById('translation-box').innerText.trim();
-            const category = document.getElementById('note-category').value;
-
-            if (!transcript) {
-                alert("No transcript found to save!");
-                return;
-            }
-
-            const notes = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
-            const newNote = {
-                id: Date.now(),
-                date: new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }),
-                category: category,
-                transcript: transcript,
-                translation: translation,
-                lang: currentLang
-            };
-
-            notes.unshift(newNote);
-            localStorage.setItem('voicemind_notes', JSON.stringify(notes));
-
-            // Reset UI
-            clearCurrentNote();
-            loadVaultNotes();
-            switchTab('vault');
-        }
-
-        function clearCurrentNote() {
-            if(isRecording) stopRecording();
-            finalTranscriptBuffer = '';
-            interimTranscriptBuffer = '';
-            document.getElementById('transcript-box').innerText = '';
-            document.getElementById('translation-box').innerText = '';
-        }
-
-        // Load Vault Stored Notes
-        function loadVaultNotes() {
-            const notes = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
-            const listEl = document.getElementById('vault-list');
-            document.getElementById('vault-count').innerText = `${notes.length} Notes`;
-
-            if (notes.length === 0) {
-                listEl.innerHTML = `
-                    <div class="text-center py-12 text-slate-500 text-xs">
-                        <i class="fa-solid fa-box-open text-2xl mb-2"></i>
-                        <p>Your vault is empty. Save notes to view them here.</p>
-                    </div>
-                `;
-                return;
-            }
-
-            listEl.innerHTML = notes.map(note => `
-                <div class="glass-card rounded-2xl p-4 space-y-2 relative group">
-                    <div class="flex justify-between items-center text-[11px] text-slate-400 border-b border-slate-800 pb-2">
-                        <span class="bg-indigo-500/10 text-indigo-400 px-2 py-0.5 rounded-md font-medium">🏷️ ${note.category}</span>
-                        <div class="flex items-center gap-2">
-                            <span>${note.date}</span>
-                            <button onclick="deleteNote(${note.id})" class="text-rose-400 hover:text-rose-300"><i class="fa-solid fa-trash-can"></i></button>
-                        </div>
-                    </div>
-                    <div class="text-xs text-slate-200 whitespace-pre-wrap ${note.lang === 'ur' ? 'urdu-text' : ''}">${note.transcript}</div>
-                    ${note.translation ? `<div class="text-xs text-cyan-300/80 pt-2 border-t border-slate-800/60 whitespace-pre-wrap">${note.translation}</div>` : ''}
-                </div>
-            `).join('');
-        }
-
-        function deleteNote(id) {
-            let notes = JSON.parse(localStorage.getItem('voicemind_notes') || '[]');
-            notes = notes.filter(n => n.id !== id);
-            localStorage.setItem('voicemind_notes', JSON.stringify(notes));
-            loadVaultNotes();
-        }
-
-        // Tab Switching
-        function switchTab(tab) {
-            const recordTab = document.getElementById('tab-record');
-            const vaultTab = document.getElementById('tab-vault');
-            const recBtn = document.getElementById('nav-btn-record');
-            const vaultNavBtn = document.getElementById('nav-btn-vault');
-
-            if (tab === 'record') {
-                recordTab.classList.remove('hidden');
-                vaultTab.classList.add('hidden');
-                recBtn.className = 'flex flex-col items-center gap-1 text-indigo-400 transition-colors';
-                vaultNavBtn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors';
-            } else {
-                recordTab.classList.add('hidden');
-                vaultTab.classList.remove('hidden');
-                vaultNavBtn.className = 'flex flex-col items-center gap-1 text-indigo-400 transition-colors';
-                recBtn.className = 'flex flex-col items-center gap-1 text-slate-400 hover:text-slate-200 transition-colors';
-                loadVaultNotes();
-            }
-        }
-
-        // Copy Text Helper
-        function copyText(elementId) {
-            const text = document.getElementById(elementId).innerText;
-            navigator.clipboard.writeText(text);
-            alert("Copied to clipboard!");
-        }
-    </script>
-</body>
-</html>
+            <div class="flex gap-3 pt-2
